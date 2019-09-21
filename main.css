@@ -140,12 +140,12 @@ title-text-form::after {
 
 .wrapper {
   margin: 0 auto;
+  padding-top: 3rem;
   max-width: 100rem;
   padding-bottom: 3rem;
 }
 
 .wrapper > header {
-  padding: 1.5rem;
   text-align: center;
 }
 
