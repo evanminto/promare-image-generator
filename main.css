@@ -1,5 +1,76 @@
+/* Yellow: #E0F4BE */
+
 * {
   box-sizing: border-box;
+  margin: 0;
+}
+
+* + * {
+  margin-top: 1.5rem;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: #D9E3DE linear-gradient(to top, #EE7CE3, #D9E3DE);
+  font-family: sans-serif;
+  text-transform: uppercase;
+  line-height: 1.5;
+  margin: 0;
+}
+
+a {
+  color: #D41A1A;
+}
+
+h1 {
+  font-family: 'Beethoven', sans-serif;
+  font-size: 4rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #000;
+  line-height: 1;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  letter-spacing: 0.0625ch;
+}
+
+input {
+  font: inherit;
+  padding: 0.75rem;
+  width: 100%;
+  border: 0.125em solid #000;
+  color: #D41A1A;
+}
+
+input:focus {
+  border-color: currentColor;
+}
+
+label + input {
+  margin-top: 0.1875rem;
+}
+
+button {
+  font: inherit;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  background: #D41A1A;
+  color: white;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.0625ch;
+  border: 0;
+}
+
+* + button {
+  margin-top: 3rem;
 }
 
 output {
@@ -9,4 +80,82 @@ output {
 output[hidden] {
   display: block;
   opacity: 0;
+}
+
+title-text-form {
+  position: relative;
+  padding: 3rem;
+  padding: calc(3rem + 5%);
+}
+
+title-text-form > * {
+  position: relative;
+  z-index: 1;
+}
+
+title-text-form::before {
+  background: #D969E7;
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  clip-path: polygon(4.01% 33.72%, 1.35% 15.38%, 51.08% 6.18%, 90.63% 11.58%, 88.67% 35.07%, 92.34% 58.26%, 86.53% 96.39%, 38.6% 92.6%, 22.23% 99.16%, 7.31% 85.06%);
+}
+
+title-text-form::after {
+  background: #B7F0C2;
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  clip-path: polygon(10.36% 5.68%, 97.23% 16.96%, 71.94% 98.42%, 3.29% 80.92%);
+}
+
+.wrapper {
+  margin: 0 auto;
+  max-width: 100rem;
+  padding-bottom: 3rem;
+}
+
+.wrapper > header {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.wrapper > header > * + * {
+  margin-top: 0;
+}
+
+.wrapper > header > p {
+  font-weight: bold;
+}
+
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -1.5rem;
+  margin-bottom: -1.5rem;
+  align-items: center;
+}
+
+.main-content > * {
+  flex: 3 1 calc((80rem - 100%) * 9999);
+  margin: 0;
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  min-width: 0;
+}
+
+.main-content > * + * {
+  flex-grow: 7;
+}
+
+.line-input {
+  text-transform: uppercase;
 }

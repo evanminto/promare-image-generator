@@ -3,6 +3,7 @@ import domtoimage from 'dom-to-image';
 import html2canvas from 'html2canvas';
 
 function fitText(el, fontFamily, width) {
+  console.log('fit text');
   const testEl = document.createElement('span');
   document.body.appendChild(testEl);
 
@@ -10,7 +11,9 @@ function fitText(el, fontFamily, width) {
     return `${val}em`;
   }
 
-  let i = 0.125;
+  const targetWidth = width * 0.85;
+
+  let i = targetWidth / 32;
 
   testEl.style.position = 'absolute';
   testEl.style.visibility = 'hidden';
@@ -19,9 +22,16 @@ function fitText(el, fontFamily, width) {
   testEl.style.fontSize = getFontSize(i);
   testEl.textContent = el.textContent;
 
-  while (window.getComputedStyle(testEl).width.replace('px', '') < width) {
-    i += 0.1;
-    testEl.style.fontSize = getFontSize(i);
+  if (parseInt(window.getComputedStyle(testEl).width.replace('px', '')) < targetWidth) {
+    while (parseInt(window.getComputedStyle(testEl).width.replace('px', '')) < targetWidth) {
+      i += 0.125;
+      testEl.style.fontSize = getFontSize(i);
+    }
+  } else {
+    while (parseInt(window.getComputedStyle(testEl).width.replace('px', '')) > targetWidth) {
+      i -= 0.125;
+      testEl.style.fontSize = getFontSize(i);
+    }
   }
 
   testEl.remove();
@@ -33,21 +43,27 @@ class TitleTextElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    this.mutationObserver = new MutationObserver(() => {
-      this.init();
+    // this.mutationObserver = new MutationObserver(() => {
+    //   console.log('mutation');
+    //   this.init();
+    // });
+
+    let width = 0;
+
+    this.resizeObserver = new ResizeObserver(entries => {
+      console.log('resize', entries);
+
+      if (entries[0].contentRect.width !== width) {
+        width = entries[0].contentRect.width;
+        this.init();
+      }
     });
 
-    this.resizeObserver = new ResizeObserver(() => {
-      this.init();
-      Array.from(this.querySelectorAll('title-text-line, title-text-script')).forEach(el => el.init());
-    });
-
-    this.mutationObserver.observe(this.renderRoot, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true,
-    });
+    // this.mutationObserver.observe(this.renderRoot, {
+    //   childList: true,
+    //   subtree: true,
+    //   characterData: true,
+    // });
 
     this.resizeObserver.observe(this);
   }
@@ -57,11 +73,15 @@ class TitleTextElement extends LitElement {
 
     this.targetWidthBlock = rect.width;
     this.targetWidthScript = rect.width * 0.5;
+
+    Array.from(this.querySelectorAll('title-text-line, title-text-script')).forEach(el => el.init());
   }
 
   render() {
     return html`
-      <slot></slot>
+      <div>
+        <slot></slot>
+      </div>
     `;
   }
 
@@ -71,7 +91,6 @@ class TitleTextElement extends LitElement {
         display: block;
         position: relative;
         line-height: 0.9;
-        transform: perspective(450px) rotate3d(1, 0, 0, 10deg) scale(0.85);
       }
 
       ::slotted(title-text-script) {
@@ -81,9 +100,8 @@ class TitleTextElement extends LitElement {
         bottom: 50%;
       }
 
-      img {
-        display: block;
-        display: none;
+      div {
+        transform: perspective(36em) rotate3d(1, 0, 0, 10deg) scale(0.75);
       }
     `;
   }
@@ -112,10 +130,9 @@ class TitleTextLineElement extends LitElement {
     });
 
     this.observer.observe(this, {
+      characterData: true,
       childList: true,
       subtree: true,
-      attributes: true,
-      characterData: true,
     });
   }
 
@@ -165,6 +182,7 @@ class TitleTextScriptElement extends LitElement {
   init() {
     const targetWidth = this.closest('title-text').targetWidthScript;
     const fontSize = fitText(this, "'Miss Rhinetta', sans-serif", targetWidth);
+    console.log(fontSize);
     this.style.setProperty('--font-size-fit', fontSize);
   }
 
@@ -179,6 +197,8 @@ class TitleTextScriptElement extends LitElement {
 
     this.observer.observe(this, {
       characterData: true,
+      childList: true,
+      subtree: true,
     });
   }
 
@@ -202,6 +222,7 @@ class TitleTextScriptElement extends LitElement {
         filter: drop-shadow(0 0.035em #000000);
         width: 100%;
         text-align: center;
+        text-transform: none;
       }
 
       span {
@@ -260,7 +281,7 @@ class TitleTextFrameElement extends LitElement {
         ${this.line1 ? html`<title-text-line>${this.line1}</title-text-line>` : ''}
         ${this.line2 ? html`<title-text-line>${this.line2}</title-text-line>` : ''}
         ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
-        ${this.script ? html`<title-text-script>${this.script}</title-text-sc>` : ''}
+        ${this.script ? html`<title-text-script>${this.script}</title-text-script>` : ''}
       </title-text>
     `;
   }
@@ -312,11 +333,13 @@ customElements.define('title-text-frame', TitleTextFrameElement);
 class TitleTextFormElement extends LitElement {
   constructor() {
     super();
+  }
 
-    this.addEventListener('submit', event => {
-      event.preventDefault();
+  connectedCallback() {
+    super.connectedCallback();
 
-      const data = new FormData(event.target);
+    const handleSubmit = form => {
+      const data = new FormData(form);
 
       const frame = this.output.querySelector('title-text-frame');
 
@@ -326,6 +349,13 @@ class TitleTextFormElement extends LitElement {
       frame.script = data.get('script');
 
       this.output.hidden = false;
+    };
+
+    handleSubmit(this.querySelector('form'));
+
+    this.addEventListener('submit', event => {
+      event.preventDefault();
+      handleSubmit(event.target);
     });
   }
 
@@ -337,6 +367,14 @@ class TitleTextFormElement extends LitElement {
 
   render() {
     return html`<slot></slot>`;
+  }
+
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+      }
+    `;
   }
 }
 

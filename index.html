@@ -1,39 +1,46 @@
 <!doctype html>
 
-<title>Promare Title Card Generator</title>
+<title>Promare Title Generator</title>
 
 <link rel="stylesheet" href="main.css">
 
 <script src="main.js" defer></script>
 
-<h1>Promare Title Card Generator</h1>
+<div class="wrapper">
+  <header>
+    <h1>Promare Title Generator</h1>
+    <p>Created by <a href="https://twitter.com/VamptVo">Evan Minto</a></p>
+  </header>
 
-<title-text-form aria-controls="title_output">
-  <form>
-    <p class="m-form-field">
-      <label for="line1">First Line</label>
-      <input id="line1" name="line1">
-    </p>
+  <div class="main-content">
+    <title-text-form aria-controls="title_output">
+      <form>
+        <p class="m-form-field">
+          <label for="line1">First Line</label>
+          <input id="line1" class="line-input" name="line1" value="The World's">
+        </p>
 
-    <p class="m-form-field">
-      <label for="line2">Second Line</label>
-      <input id="line2" name="line2">
-    </p>
+        <p class="m-form-field">
+          <label for="line2">Second Line</label>
+          <input id="line2" class="line-input" name="line2" value="Number One">
+        </p>
 
-    <p class="m-form-field">
-      <label for="line3">Third Line</label>
-      <input id="line3" name="line3">
-    </p>
+        <p class="m-form-field">
+          <label for="line3">Third Line</label>
+          <input id="line3" class="line-input" name="line3" value="Firefighting Idiot">
+        </p>
 
-    <p class="m-form-field">
-      <label for="script">Script Overlay</label>
-      <input id="script" name="script">
-    </p>
+        <p class="m-form-field">
+          <label for="script">Script Overlay</label>
+          <input id="script" name="script" value="Galo Thymos">
+        </p>
 
-    <button>Generate</button>
-  </form>
-</title-text-form>
+        <button>Generate</button>
+      </form>
+    </title-text-form>
 
-<output id="title_output" hidden>
-  <title-text-frame></title-text-frame>
-</output>
+    <output id="title_output" hidden>
+      <title-text-frame></title-text-frame>
+    </output>
+  </div>
+</div>
