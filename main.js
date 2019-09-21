@@ -1,8 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import domtoimage from 'dom-to-image';
-import html2canvas from 'html2canvas';
 
-function fitText(el, fontFamily, width) {
+function fitText(el, styles, width) {
   console.log('fit text');
   const testEl = document.createElement('span');
   document.body.appendChild(testEl);
@@ -18,7 +16,9 @@ function fitText(el, fontFamily, width) {
   testEl.style.position = 'absolute';
   testEl.style.visibility = 'hidden';
   testEl.style.whiteSpace = 'nowrap';
-  testEl.style.fontFamily = fontFamily;
+  Object.keys(styles).forEach(prop => {
+    testEl.style[prop] = styles[prop];
+  });
   testEl.style.fontSize = getFontSize(i);
   testEl.textContent = el.textContent;
 
@@ -72,7 +72,7 @@ class TitleTextElement extends LitElement {
     const rect = this.getBoundingClientRect();
 
     this.targetWidthBlock = rect.width;
-    this.targetWidthScript = rect.width * 0.5;
+    this.targetWidthScript = rect.width * 0.667;
 
     Array.from(this.querySelectorAll('title-text-line, title-text-script')).forEach(el => el.init());
   }
@@ -101,7 +101,7 @@ class TitleTextElement extends LitElement {
       }
 
       div {
-        transform: perspective(36em) rotate3d(1, 0, 0, 10deg) scale(0.75);
+        transform: perspective(36em) rotate3d(1, 0, 0, 12deg) scale(0.85);
       }
     `;
   }
@@ -116,7 +116,9 @@ class TitleTextLineElement extends LitElement {
 
   init() {
     const targetWidth = this.closest('title-text').targetWidthBlock;
-    const fontSize = fitText(this, "'Beethoven', sans-serif", targetWidth);
+    const fontSize = fitText(this, {
+      fontFamily: "'Beethoven', sans-serif",
+    }, targetWidth);
     this.style.setProperty('--font-size-fit', fontSize);
   }
 
@@ -146,6 +148,7 @@ class TitleTextLineElement extends LitElement {
         display: block;
         font-family: 'Beethoven', sans-serif;
         font-size: var(--font-size-fit);
+        font-weight: bold;
         text-transform: uppercase;
         filter: drop-shadow(0 0.025em #FBF41A);
         margin: auto;
@@ -181,8 +184,11 @@ class TitleTextScriptElement extends LitElement {
 
   init() {
     const targetWidth = this.closest('title-text').targetWidthScript;
-    const fontSize = fitText(this, "'Miss Rhinetta', sans-serif", targetWidth);
-    console.log(fontSize);
+    const fontSize = fitText(this, {
+      fontFamily: "'Xtreem', fantasy",
+      textTransform: 'none',
+      wordSpacing: '-0.25ch',
+    }, targetWidth);
     this.style.setProperty('--font-size-fit', fontSize);
   }
 
@@ -212,8 +218,9 @@ class TitleTextScriptElement extends LitElement {
     return css`
       :host {
         display: block;
-        font-family: 'Xtreem Fat PERSONAL USE', fantasy;
+        font-family: 'Xtreem', fantasy;
         // font-family: 'Miss Rhinetta', fantasy;
+        font-weight: bold;
         color: #D41A1A;
         --x-y-ratio: 11/20;
         --target-width: 8em;
@@ -223,6 +230,7 @@ class TitleTextScriptElement extends LitElement {
         width: 100%;
         text-align: center;
         text-transform: none;
+        word-spacing: -0.25ch;
       }
 
       span {
