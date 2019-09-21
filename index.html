@@ -1,0 +1,39 @@
+<!doctype html>
+
+<title>Promare Title Card Generator</title>
+
+<link rel="stylesheet" href="main.css">
+
+<script src="main.js" defer></script>
+
+<h1>Promare Title Card Generator</h1>
+
+<title-text-form aria-controls="title_output">
+  <form>
+    <p class="m-form-field">
+      <label for="line1">First Line</label>
+      <input id="line1" name="line1">
+    </p>
+
+    <p class="m-form-field">
+      <label for="line2">Second Line</label>
+      <input id="line2" name="line2">
+    </p>
+
+    <p class="m-form-field">
+      <label for="line3">Third Line</label>
+      <input id="line3" name="line3">
+    </p>
+
+    <p class="m-form-field">
+      <label for="script">Script Overlay</label>
+      <input id="script" name="script">
+    </p>
+
+    <button>Generate</button>
+  </form>
+</title-text-form>
+
+<output id="title_output" hidden>
+  <title-text-frame></title-text-frame>
+</output>

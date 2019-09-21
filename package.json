@@ -1,0 +1,24 @@
+{
+  "name": "promare-image-generator",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:evanminto/promare-image-generator.git",
+  "author": "Evan Minto <evan.minto@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build index.html --out-dir dist",
+    "serve": "parcel serve index.html --out-dir dist",
+    "start": "yarn run watch"
+  },
+  "browserslist": [
+    "cover 78%"
+  ],
+  "devDependencies": {
+    "lit-element": "^2.2.1",
+    "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "dom-to-image": "^2.6.0",
+    "html2canvas": "^1.0.0-rc.3"
+  }
+}
