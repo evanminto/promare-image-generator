@@ -5,6 +5,12 @@
 }
 
 @font-face {
+  font-family: 'FC-Flower';
+  src: url('./fonts/FC-Flower.ttf') format('truetype');
+  font-weight: 100 900;
+}
+
+@font-face {
   font-family: 'Beethoven';
   src: url('./fonts/Beethoven.ttf') format("truetype");
   font-weight: 100 900;
@@ -153,7 +159,6 @@ title-text-form::after {
   font-weight: bold;
   text-align: center;
   background: white;
-  background: linear-gradient(to top, hsla(0, 0%, 100%, 0.85), hsla(0, 0%, 100%, 0.35));
   padding: 3rem 3rem 12rem;
   clip-path: polygon(calc(50% - 10em) 0%, calc(50% + 10em) 0%, 50% 100%);
 }
@@ -201,4 +206,5 @@ title-text-form::after {
   background: white;
   padding: 1.5rem;
   clip-path: polygon(-3.3% 10.63%, 94.88% -12.31%, 102.73% 90.76%, 2.35% 108.70%);
+  filter: drop-shadow(0, 0.25em, 0, 0.25em black);
 }

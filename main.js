@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 
-function fitText(el, styles, width) {
-  console.log('fit text');
+function fitText(el, styles, width, constrainSize = false) {
   const testEl = document.createElement('span');
   document.body.appendChild(testEl);
 
@@ -20,7 +19,16 @@ function fitText(el, styles, width) {
     testEl.style[prop] = styles[prop];
   });
   testEl.style.fontSize = getFontSize(i);
-  testEl.textContent = el.textContent;
+
+  let textContent = el.textContent;
+
+  if (constrainSize) {
+    while (textContent.length < 8) {
+      textContent += 'x';
+    }
+  }
+
+  testEl.textContent = textContent;
 
   if (parseInt(window.getComputedStyle(testEl).width.replace('px', '')) < targetWidth) {
     while (parseInt(window.getComputedStyle(testEl).width.replace('px', '')) < targetWidth) {
@@ -51,8 +59,6 @@ class TitleTextElement extends LitElement {
     let width = 0;
 
     this.resizeObserver = new ResizeObserver(entries => {
-      console.log('resize', entries);
-
       if (entries[0].contentRect.width !== width) {
         width = entries[0].contentRect.width;
         this.init();
@@ -72,7 +78,7 @@ class TitleTextElement extends LitElement {
     const rect = this.getBoundingClientRect();
 
     this.targetWidthBlock = rect.width;
-    this.targetWidthScript = rect.width * 0.667;
+    this.targetWidthScript = rect.width * 0.75;
 
     Array.from(this.querySelectorAll('title-text-line, title-text-script')).forEach(el => el.init());
   }
@@ -94,7 +100,7 @@ class TitleTextElement extends LitElement {
       }
 
       ::slotted(title-text-script) {
-        transform: rotate(-3deg) translate(-50%, 50%);
+        transform: translate(-50%, calc(50% + 0.125em)) rotate(-7.5deg);
         position: absolute;
         left: 50%;
         bottom: 50%;
@@ -185,10 +191,10 @@ class TitleTextScriptElement extends LitElement {
   init() {
     const targetWidth = this.closest('title-text').targetWidthScript;
     const fontSize = fitText(this, {
-      fontFamily: "'Xtreem', fantasy",
+      fontFamily: "'Xtreem', 'FC-Flower', fantasy",
       textTransform: 'none',
-      wordSpacing: '-0.25ch',
-    }, targetWidth);
+      wordSpacing: '-0.15ch',
+    }, targetWidth, true);
     this.style.setProperty('--font-size-fit', fontSize);
   }
 
@@ -218,8 +224,8 @@ class TitleTextScriptElement extends LitElement {
     return css`
       :host {
         display: block;
-        font-family: 'Xtreem', fantasy;
-        // font-family: 'Miss Rhinetta', fantasy;
+        font-family: 'Xtreem', 'FC-Flower', fantasy;
+        // font-family: 'Miss Rhinetta', 'FC-Flower', fantasy;
         font-weight: bold;
         color: #D41A1A;
         --x-y-ratio: 11/20;
@@ -230,7 +236,7 @@ class TitleTextScriptElement extends LitElement {
         width: 100%;
         text-align: center;
         text-transform: none;
-        word-spacing: -0.25ch;
+        word-spacing: -0.15ch;
       }
 
       span {
@@ -299,7 +305,7 @@ class TitleTextFrameElement extends LitElement {
       :host {
         display: block;
         background: #EC164C;
-        padding: 12.5% calc(0.5em + 1vw);
+        padding: 20% calc(0.5em + 1vw);
       }
     `;
   }
