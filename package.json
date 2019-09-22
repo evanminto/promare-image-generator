@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "dom-to-image": "^2.6.0",
+    "focus-visible": "^5.0.2",
     "html2canvas": "^1.0.0-rc.3"
   }
 }

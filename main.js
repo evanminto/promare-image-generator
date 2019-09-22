@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import 'focus-visible';
 import ResizeObserver from 'resize-observer-polyfill';
 
 function fitText(el, styles, width, constrainSize = false) {
