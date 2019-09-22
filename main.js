@@ -376,7 +376,9 @@ class TitleTextFormElement extends LitElement {
       status.message = 'Title generated!';
     };
 
-    handleSubmit(this.querySelector('form'));
+    setTimeout(() => {
+      handleSubmit(this.querySelector('form'));
+    }, 250);
 
     this.addEventListener('submit', event => {
       event.preventDefault();
