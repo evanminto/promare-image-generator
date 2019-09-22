@@ -195,8 +195,8 @@ title-text-form > * {
   text-align: center;
   background: white;
   padding: 3rem;
-  -webkit-clip-path: polygon(calc(50% - 10em) 0%, calc(50% + 10em) 0%, 50% 100%);
-  clip-path: polygon(calc(50% - 10em) 0%, calc(50% + 10em) 0%, 50% 100%);
+  -webkit-clip-path: polygon(calc(50% - 12em) 0%, calc(50% + 12em) 0%, 50% 100%);
+  clip-path: polygon(calc(50% - 12em) 0%, calc(50% + 12em) 0%, 50% 100%);
 }
 
 @supports (clip-path: polygon(0% 0%, 0% 100%, 100% 100%)) or (-webkit-clip-path: polygon(0% 0%, 0% 100%, 100% 100%)) {
