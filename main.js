@@ -58,7 +58,7 @@ function fitText(el, styles, width, constrainSize = false, replaceSpecialChars =
     }
   }
 
-  // testEl.remove();
+  testEl.remove();
 
   return getFontSize(i);
 }
@@ -287,6 +287,22 @@ class TitleTextFrameElement extends LitElement {
         type: String,
         attribute: true,
       },
+      colorBg: {
+        type: String,
+        attribute: true,
+      },
+      colorText: {
+        type: String,
+        attribute: true,
+      },
+      colorTextBottom: {
+        type: String,
+        attribute: true,
+      },
+      colorShadow: {
+        type: String,
+        attribute: true,
+      },
     }
   }
 
@@ -308,7 +324,7 @@ class TitleTextFrameElement extends LitElement {
 
   render() {
     return html`
-      <title-text>
+      <title-text style="--color-bg: ${this.colorBg}; --color-text: ${this.colorText}; --color-text-bottom: ${this.colorTextBottom}; --color-shadow: ${this.colorShadow};">
         ${this.line1 ? html`<title-text-line>${this.line1}</title-text-line>` : ''}
         ${this.line2 ? html`<title-text-line>${this.line2}</title-text-line>` : ''}
         ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
@@ -361,6 +377,7 @@ class TitleTextFormElement extends LitElement {
       frame.line3 = data.get('line3').trim();
       frame.script = '';
       frame.script = data.get('script').trim();
+      frame.colorScheme = data.get('color_scheme');
 
       frame.hidden = false;
 
@@ -416,3 +433,170 @@ class AriaStatusElement extends HTMLElement {
 }
 
 customElements.define('aria-status', AriaStatusElement);
+
+class ColorSelectElement extends LitElement {
+  // createRenderRoot() {
+  //   return this;
+  // }
+
+  static get properties() {
+    return {
+      name: {
+        type: String,
+        attribute: true,
+      },
+      label: {
+        type: String,
+        attribute: true,
+      },
+    };
+  }
+
+  render() {
+    return html`
+      <fieldset>
+        <legend>${this.label}</legend>
+
+        <ul>
+          ${Array.from(this.children).map((child, index) => {
+            if (!child.matches('color-option')) {
+              return undefined;
+            }
+
+            const option = child;
+            const id = `color${index}`;
+
+            return html`
+              <li>
+                <input id="${id}" name="${this.name}" type="radio" ?checked="${option.selected}">
+                <label for="${id}" style="--bg: ${option.value === '_' ? option.placeholderValue : option.value}; --text: ${option.contrastValue}">
+                  ${option.name}
+                </label>
+              </li>
+            `;
+          })}
+        </ul>
+      </fieldset>
+    `;
+  }
+
+  static get styles() {
+    return css`
+      * {
+        box-sizing: border-box;
+      }
+
+      :host {
+        display: block;
+        text-align: center;
+      }
+
+      fieldset {
+        padding: 0;
+        border: 0;
+      }
+
+      legend {
+        display: block;
+        font-weight: bold;
+        letter-spacing: 0.0625ch;
+      }
+
+      legend + * {
+        margin-top: 0.1875rem;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -0.75rem;
+        margin-bottom: -0.75rem;
+      }
+
+      ul > * {
+        flex: 1 1 calc((var(--breakpoint, 15rem) - 100%) * 9999);
+        margin: 0 0 0.75rem 0.75rem;
+      }
+
+      ul > :first-child:nth-last-child(3),
+      ul > :first-child:nth-last-child(3) ~ * {
+        --breakpoint: 20rem;
+      }
+
+      ul > :first-child:nth-last-child(4),
+      ul > :first-child:nth-last-child(4) ~ * {
+        --breakpoint: 30rem;
+      }
+
+      li {
+        position: relative;
+      }
+
+      input {
+        opacity: 0;
+        position: absolute;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        color: var(--text);
+        padding: 0.75rem 1.5rem;
+        width: 100%;
+        font-size: 0.75rem;
+        height: 100%;
+      }
+
+      input:checked ~ label {
+        outline: 0.125rem solid currentColor;
+        outline-offset: -0.375rem;
+      }
+
+      input:focus ~ label {
+        box-shadow: 0 0 0 0.25rem currentColor;
+      }
+    `;
+  }
+}
+
+customElements.define('color-select', ColorSelectElement);
+
+class ColorOptionElement extends LitElement {
+  constructor() {
+    super();
+
+    this.contrastValue = this.contrastValue ? this.contrastValue : 'black';
+  }
+
+  static get properties() {
+    return {
+      name: {
+        type: String,
+        attribute: true,
+      },
+      value: {
+        type: String,
+        attribute: true,
+      },
+      contrastValue: {
+        type: String,
+        attribute: 'contrast-value',
+      },
+      placeholderValue: {
+        type: String,
+        attribute: 'placeholder-value',
+      },
+      selected: {
+        type: Boolean,
+        attribute: true,
+      },
+    }
+  }
+}
+
+customElements.define('color-option', ColorOptionElement);
