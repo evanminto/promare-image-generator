@@ -1,12 +1,24 @@
 <!doctype html>
 
-<title>Promare Title Generator</title>
+<head>
+  <title>Promare Title Generator</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146605495-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-<link rel="stylesheet" href="main.css">
+    gtag('config', 'UA-146605495-2');
+  </script>
 
-<script src="main.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="main.css">
+
+  <script src="main.js" defer></script>
+</head>
 
 <div class="wrapper">
   <header>
@@ -40,8 +52,12 @@
       </form>
     </title-text-form>
 
-    <output id="title_output" hidden>
-      <title-text-frame></title-text-frame>
+    <output id="title_output">
+      <title-text-frame>
+        <div class="fallback-message">
+          <p>Sorry, this site doesn’t work with your current browser and/or browser settings. Please try another browser, turning on JavaScript, or turning off ad-blocking/tracking protection.</p>
+        </div>
+      </title-text-frame>
     </output>
   </div>
 
@@ -57,3 +73,5 @@
     <p><a href="https://twitter.com/VamptVo">Twitter</a> | <a href="https://github.com/evanminto/">GitHub</a></p>
   </footer>
 </div>
+
+<aria-status></aria-status>

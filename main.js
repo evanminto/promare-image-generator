@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import ResizeObserver from 'resize-observer-polyfill';
 
 function fitText(el, styles, width, constrainSize = false) {
   const testEl = document.createElement('span');
@@ -352,17 +353,26 @@ class TitleTextFormElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    const handleSubmit = form => {
+    const handleSubmit = async form => {
+      await Promise.all([
+        customElements.whenDefined('title-text-frame'),
+        customElements.whenDefined('aria-status'),
+      ]);
+
       const data = new FormData(form);
 
       const frame = this.output.querySelector('title-text-frame');
+      frame.hidden = true;
 
       frame.line1 = data.get('line1');
       frame.line2 = data.get('line2');
       frame.line3 = data.get('line3');
       frame.script = data.get('script');
 
-      this.output.hidden = false;
+      frame.hidden = false;
+
+      const status = document.querySelector('aria-status');
+      status.message = 'Title generated!';
     };
 
     handleSubmit(this.querySelector('form'));
@@ -393,3 +403,21 @@ class TitleTextFormElement extends LitElement {
 }
 
 customElements.define('title-text-form', TitleTextFormElement);
+
+class AriaStatusElement extends HTMLElement {
+  constructor() {
+    super();
+
+    this.setAttribute('role', 'alert');
+    this.setAttribute('aria-live', 'assertive');
+  }
+
+  set message(value) {
+    this.textContent = '';
+    setTimeout(() => {
+      this.textContent = value;
+    }, 250);
+  }
+}
+
+customElements.define('aria-status', AriaStatusElement);
