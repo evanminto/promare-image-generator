@@ -48,6 +48,29 @@
           <input id="script" name="script" value="Galo Thymos">
         </p>
 
+        <details>
+          <summary>Colors</summary>
+
+          <color-select name="color_bg" label="Background Color">
+            <color-option name="Pink" value="#EC164C" contrast-value="white" selected></color-option>
+            <color-option name="Blue" value="#3098A5"></color-option>
+            <color-option name="White" value="white"></color-option>
+          </color-select>
+
+          <color-select name="color_text" label="Text Color">
+            <color-option name="Black &amp; Purple" value="linear-gradient(to top, #780967, #000 60%, #000)" contrast-value="white" selected></color-option>
+            <color-option name="Black &amp; Blue" value="linear-gradient(to top, #126367, #000 60%, #000)" contrast-value="white"></color-option>
+            <color-option name="Black" value="black" contrast-value="white"></color-option>
+            <color-option name="White" value="white"></color-option>
+          </color-select>
+
+          <color-select name="color_shadow" label="Shadow Color">
+            <color-option name="Yellow" value="#FBF41A" selected></color-option>
+            <color-option name="Black" value="black" contrast-value="white"></color-option>
+            <color-option name="None" value="_" placeholder-value="hsla(0, 0%, 100%, 0.5)"></color-option>
+          </color-select>
+        </details>
+
         <button>Generate</button>
       </form>
     </title-text-form>

@@ -161,7 +161,7 @@ class TitleTextLineElement extends LitElement {
         font-size: var(--font-size-fit);
         font-weight: bold;
         text-transform: uppercase;
-        filter: drop-shadow(0 0.025em #FBF41A);
+        filter: drop-shadow(0 var(--shadow-size) var(--color-shadow));
         margin: auto;
         text-align: center;
       }
@@ -169,13 +169,10 @@ class TitleTextLineElement extends LitElement {
       span {
         -webkit-background-clip: text;
         background-clip: text;
-        background-color: #000;
-        background-image: linear-gradient(
-          to top,
-          #780967,
-          #000 60%,
-          #000
-        );
+        background-color: var(--color-text);
+        background-image: var(--color-text);
+        -webkit-text-stroke: 0.025em var(--color-stroke);
+        text-stroke: 0.025em var(--color-stroke);
         color: transparent;
       }
     `;
@@ -198,7 +195,7 @@ class TitleTextScriptElement extends LitElement {
     const fontSize = fitText(this, {
       fontFamily: "'Xtreem', '851 Chikara', fantasy",
       textTransform: 'none',
-      wordSpacing: '-0.15ch',
+      wordSpacing: '-0.05ch',
     }, targetWidth, true, true);
     this.style.setProperty('--font-size-fit', fontSize);
   }
@@ -231,7 +228,7 @@ class TitleTextScriptElement extends LitElement {
         width: 100%;
         text-align: center;
         text-transform: none;
-        word-spacing: -0.15ch;
+        word-spacing: -0.05ch;
       }
 
       :host([lang='ja']) {
@@ -295,10 +292,6 @@ class TitleTextFrameElement extends LitElement {
         type: String,
         attribute: true,
       },
-      colorTextBottom: {
-        type: String,
-        attribute: true,
-      },
       colorShadow: {
         type: String,
         attribute: true,
@@ -322,18 +315,42 @@ class TitleTextFrameElement extends LitElement {
     return template.content;
   }
 
+  get colorStroke() {
+    if (this.colorText === 'white') {
+      return this.colorShadow;
+    }
+
+    return '_';
+  }
+
+  get shadowSize() {
+    if (this.colorText === 'white' && this.colorShadow === 'black') {
+      return '0.2em';
+    }
+
+    return '0.025em';
+  }
+
   render() {
     return html`
-      <title-text style="--color-bg: ${this.colorBg}; --color-text: ${this.colorText}; --color-text-bottom: ${this.colorTextBottom}; --color-shadow: ${this.colorShadow};">
-        ${this.line1 ? html`<title-text-line>${this.line1}</title-text-line>` : ''}
-        ${this.line2 ? html`<title-text-line>${this.line2}</title-text-line>` : ''}
-        ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
-        ${this.script ? html`
-          <title-text-script lang="${this.isScriptJapanese ? 'ja' : undefined}">
-            ${this.safeScript}
-          </title-text-script>
-        ` : ''}
-      </title-text>
+      <div class="wrapper" style="
+        --color-bg: ${this.colorBg};
+        --color-text: ${this.colorText};
+        --color-shadow: ${this.colorShadow};
+        --color-stroke: ${this.colorStroke};
+        --shadow-size: ${this.shadowSize};
+      ">
+        <title-text>
+          ${this.line1 ? html`<title-text-line>${this.line1}</title-text-line>` : ''}
+          ${this.line2 ? html`<title-text-line>${this.line2}</title-text-line>` : ''}
+          ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
+          ${this.script ? html`
+            <title-text-script lang="${this.isScriptJapanese ? 'ja' : undefined}">
+              ${this.safeScript}
+            </title-text-script>
+          ` : ''}
+        </title-text>
+      </div>
     `;
   }
 
@@ -341,7 +358,11 @@ class TitleTextFrameElement extends LitElement {
     return css`
       :host {
         display: block;
+      }
+
+      .wrapper {
         background: #EC164C;
+        background: var(--color-bg);
         padding: 20% calc(0.5em + 1vw);
       }
     `;
@@ -377,7 +398,9 @@ class TitleTextFormElement extends LitElement {
       frame.line3 = data.get('line3').trim();
       frame.script = '';
       frame.script = data.get('script').trim();
-      frame.colorScheme = data.get('color_scheme');
+      frame.colorBg = data.get('color_bg');
+      frame.colorText = data.get('color_text');
+      frame.colorShadow = data.get('color_shadow');
 
       frame.hidden = false;
 
@@ -452,9 +475,27 @@ class ColorSelectElement extends LitElement {
     };
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = this.name;
+
+    this.appendChild(input);
+  }
+
+  firstUpdated() {
+    this.handleChange();
+  }
+
+  handleChange() {
+    this.querySelector('input').value = this.renderRoot.querySelector('input:checked').dataset.value;
+  }
+
   render() {
     return html`
-      <fieldset>
+      <fieldset @change="${this.handleChange}">
         <legend>${this.label}</legend>
 
         <ul>
@@ -468,7 +509,7 @@ class ColorSelectElement extends LitElement {
 
             return html`
               <li>
-                <input id="${id}" name="${this.name}" type="radio" ?checked="${option.selected}">
+                <input id="${id}" name="${this.name}" type="radio" ?checked="${option.selected}" data-value="${option.value}">
                 <label for="${id}" style="--bg: ${option.value === '_' ? option.placeholderValue : option.value}; --text: ${option.contrastValue}">
                   ${option.name}
                 </label>

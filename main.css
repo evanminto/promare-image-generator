@@ -93,6 +93,10 @@ label + input {
   margin-top: 0.1875rem;
 }
 
+summary {
+  cursor: default;
+}
+
 button {
   font: inherit;
   font-weight: bold;
