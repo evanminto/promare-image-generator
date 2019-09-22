@@ -125,7 +125,7 @@ class TitleTextLineElement extends LitElement {
   init() {
     const targetWidth = this.closest('title-text').targetWidthBlock;
     const fontSize = fitText(this, {
-      fontFamily: "'Beethoven', sans-serif",
+      fontFamily: "'Beethoven', 'GN Kill Gothic U', sans-serif",
     }, targetWidth);
     this.style.setProperty('--font-size-fit', fontSize);
   }
@@ -154,7 +154,7 @@ class TitleTextLineElement extends LitElement {
     return css`
       :host {
         display: block;
-        font-family: 'Beethoven', sans-serif;
+        font-family: 'Beethoven', 'GN Kill Gothic U', sans-serif;
         font-size: var(--font-size-fit);
         font-weight: bold;
         text-transform: uppercase;
@@ -193,7 +193,7 @@ class TitleTextScriptElement extends LitElement {
   init() {
     const targetWidth = this.closest('title-text').targetWidthScript;
     const fontSize = fitText(this, {
-      fontFamily: "'Xtreem', 'FC-Flower', fantasy",
+      fontFamily: "'Xtreem', '851 Chikara', fantasy",
       textTransform: 'none',
       wordSpacing: '-0.15ch',
     }, targetWidth, true);
@@ -217,28 +217,22 @@ class TitleTextScriptElement extends LitElement {
   }
 
   static get styles() {
-    // x * c = w
-    // x = f * r
-    // r = cx / cy
-    // f * r * c = w
-    // f = w / (r * c)
-
     return css`
       :host {
         display: block;
-        font-family: 'Xtreem', 'FC-Flower', fantasy;
-        // font-family: 'Miss Rhinetta', 'FC-Flower', fantasy;
+        font-family: 'Xtreem', '851 Chikara', fantasy;
         font-weight: bold;
         color: #D41A1A;
-        --x-y-ratio: 11/20;
-        --target-width: 8em;
-        // font-size: calc(var(--target-width) / (var(--x-y-ratio) * var(--char-count)));
         font-size: var(--font-size-fit);
         filter: drop-shadow(0 0.035em #000000);
         width: 100%;
         text-align: center;
         text-transform: none;
         word-spacing: -0.15ch;
+      }
+
+      :host([lang='ja']) {
+        font-style: italic;
       }
 
       span {
@@ -291,13 +285,21 @@ class TitleTextFrameElement extends LitElement {
     this.renderRoot.querySelector('title-text').init();
   }
 
+  get isScriptJapanese() {
+    return Boolean(this.script.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/));
+  }
+
   render() {
     return html`
       <title-text>
         ${this.line1 ? html`<title-text-line>${this.line1}</title-text-line>` : ''}
         ${this.line2 ? html`<title-text-line>${this.line2}</title-text-line>` : ''}
         ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
-        ${this.script ? html`<title-text-script>${this.script}</title-text-script>` : ''}
+        ${this.script ? html`
+          <title-text-script lang="${this.isScriptJapanese ? 'ja' : undefined}">
+            ${this.script}
+          </title-text-script>
+        ` : ''}
       </title-text>
     `;
   }
@@ -314,37 +316,6 @@ class TitleTextFrameElement extends LitElement {
 }
 
 customElements.define('title-text-frame', TitleTextFrameElement);
-
-// class TitleTextImageElement extends LitElement {
-//   constructor() {
-//     super();
-//   }
-
-//   static get properties() {
-//     return {
-//       canvas: {
-//         type: Object,
-//       },
-//     }
-//   }
-
-//   async generate(el) {
-//     this.canvas = await html2canvas(el);
-//     // this.src = await domtoimage.toPng(el);
-//   }
-
-//   render() {
-//     return html`
-//       ${this.canvas}
-//     `;
-//   }
-
-//   static get styles() {
-//     return css``;
-//   }
-// }
-
-// customElements.define('title-text-image', TitleTextImageElement);
 
 class TitleTextFormElement extends LitElement {
   constructor() {
@@ -365,9 +336,13 @@ class TitleTextFormElement extends LitElement {
       const frame = this.output.querySelector('title-text-frame');
       frame.hidden = true;
 
+      frame.line1 = '';
       frame.line1 = data.get('line1');
+      frame.line2 = '';
       frame.line2 = data.get('line2');
+      frame.line3 = '';
       frame.line3 = data.get('line3');
+      frame.script = '';
       frame.script = data.get('script');
 
       frame.hidden = false;
@@ -378,7 +353,7 @@ class TitleTextFormElement extends LitElement {
 
     setTimeout(() => {
       handleSubmit(this.querySelector('form'));
-    }, 250);
+    }, 500);
 
     this.addEventListener('submit', event => {
       event.preventDefault();

@@ -1,18 +1,27 @@
 @font-face {
+  font-family: 'Beethoven';
+  src: url('./fonts/Beethoven.ttf') format("truetype");
+  font-weight: 100 900;
+}
+
+@font-face {
   font-family: 'Xtreem';
   src: url('./fonts/XtreemFat.ttf') format('truetype');
   font-weight: 500 900;
 }
 
 @font-face {
-  font-family: 'FC-Flower';
-  src: url('./fonts/FC-Flower.ttf') format('truetype');
+  font-family: '851 Chikara';
+  src: url('./fonts/851CHIKARA-DZUYOKU_kanaA_004.ttf') format('truetype'),
+       url('./fonts/851CHIKARA-DZUYOKU_kanaB_004.ttf') format('truetype');
   font-weight: 100 900;
 }
 
 @font-face {
-  font-family: 'Beethoven';
-  src: url('./fonts/Beethoven.ttf') format("truetype");
+  font-family: 'GN Kill Gothic U';
+  src: url('./fonts/GN-KillGothic-U-KanaNA.ttf') format('truetype'),
+       url('./fonts/GN-KillGothic-U-KanaNB.ttf') format('truetype'),
+       url('./fonts/GN-KillGothic-U-KanaO.ttf') format('truetype');
   font-weight: 100 900;
 }
 
