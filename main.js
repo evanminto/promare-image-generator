@@ -2,9 +2,15 @@ import { LitElement, html, css } from 'lit-element';
 import 'focus-visible';
 import ResizeObserver from 'resize-observer-polyfill';
 
-function fitText(el, styles, width, constrainSize = false) {
+function isJapanese(str) {
+  return Boolean(str.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/));
+}
+
+function fitText(el, styles, width, constrainSize = false, replaceSpecialChars = false) {
   const testEl = document.createElement('span');
   document.body.appendChild(testEl);
+
+  const jp = isJapanese(el.textContent);
 
   function getFontSize(val) {
     return `${val}em`;
@@ -22,11 +28,19 @@ function fitText(el, styles, width, constrainSize = false) {
   });
   testEl.style.fontSize = getFontSize(i);
 
-  let textContent = el.textContent;
+  let textContent = el.textContent
+
+  if (replaceSpecialChars　&& !jp) {
+    textContent = textContent.replace(/([^a-zA-Z'"!@\(\)_\-\^\n ])/g, 'xx');
+  }
 
   if (constrainSize) {
     while (textContent.length < 8) {
-      textContent += 'x';
+      if (jp) {
+        textContent += 'ア';
+      } else {
+        textContent += 'x';
+      }
     }
   }
 
@@ -44,7 +58,7 @@ function fitText(el, styles, width, constrainSize = false) {
     }
   }
 
-  testEl.remove();
+  // testEl.remove();
 
   return getFontSize(i);
 }
@@ -52,11 +66,6 @@ function fitText(el, styles, width, constrainSize = false) {
 class TitleTextElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
-
-    // this.mutationObserver = new MutationObserver(() => {
-    //   console.log('mutation');
-    //   this.init();
-    // });
 
     let width = 0;
 
@@ -66,12 +75,6 @@ class TitleTextElement extends LitElement {
         this.init();
       }
     });
-
-    // this.mutationObserver.observe(this.renderRoot, {
-    //   childList: true,
-    //   subtree: true,
-    //   characterData: true,
-    // });
 
     this.resizeObserver.observe(this);
   }
@@ -196,7 +199,7 @@ class TitleTextScriptElement extends LitElement {
       fontFamily: "'Xtreem', '851 Chikara', fantasy",
       textTransform: 'none',
       wordSpacing: '-0.15ch',
-    }, targetWidth, true);
+    }, targetWidth, true, true);
     this.style.setProperty('--font-size-fit', fontSize);
   }
 
@@ -232,7 +235,13 @@ class TitleTextScriptElement extends LitElement {
       }
 
       :host([lang='ja']) {
+        font-size: calc(1.125 * var(--font-size-fit));
         font-style: italic;
+      }
+
+      ::slotted(span.special-chars) {
+        font-family: '851 Chikara', fantasy;
+        font-size: 0.5em;
       }
 
       span {
@@ -286,7 +295,15 @@ class TitleTextFrameElement extends LitElement {
   }
 
   get isScriptJapanese() {
-    return Boolean(this.script.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/));
+    return isJapanese(this.script);
+  }
+
+  get safeScript() {
+    const html = this.script.replace(/([^a-zA-Z'"!@\(\)_\-\^ ]+)/g, '<span class="special-chars">$1</span>');
+    const template = document.createElement('template');
+    template.innerHTML = html;
+
+    return template.content;
   }
 
   render() {
@@ -297,7 +314,7 @@ class TitleTextFrameElement extends LitElement {
         ${this.line3 ? html`<title-text-line>${this.line3}</title-text-line>` : ''}
         ${this.script ? html`
           <title-text-script lang="${this.isScriptJapanese ? 'ja' : undefined}">
-            ${this.script}
+            ${this.safeScript}
           </title-text-script>
         ` : ''}
       </title-text>
@@ -337,13 +354,13 @@ class TitleTextFormElement extends LitElement {
       frame.hidden = true;
 
       frame.line1 = '';
-      frame.line1 = data.get('line1');
+      frame.line1 = data.get('line1').trim();
       frame.line2 = '';
-      frame.line2 = data.get('line2');
+      frame.line2 = data.get('line2').trim();
       frame.line3 = '';
-      frame.line3 = data.get('line3');
+      frame.line3 = data.get('line3').trim();
       frame.script = '';
-      frame.script = data.get('script');
+      frame.script = data.get('script').trim();
 
       frame.hidden = false;
 
